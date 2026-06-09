@@ -38,20 +38,38 @@ with left:
 
     if st.button("Play Move"):
 
-        success = make_move(
-            st.session_state.board,
-            move
+    success = make_move(
+        st.session_state.board,
+        move
+    )
+
+    if success:
+
+        # Store human move
+        st.session_state.moves.append(
+            f"Human: {move}"
         )
 
-        if success:
+        # AI thinks
+        ai_move = get_ai_move(
+            st.session_state.board
+        )
 
-            st.session_state.moves.append(move)
+        if ai_move:
 
-            st.success("Move Played")
+            st.session_state.board.push_uci(
+                ai_move
+            )
 
-        else:
+            st.session_state.moves.append(
+                f"AI: {ai_move}"
+            )
 
-            st.error("Illegal Move")
+        st.success("Move Played")
+
+    else:
+
+        st.error("Illegal Move")
 
     st.subheader("Move History")
 
