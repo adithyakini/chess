@@ -31,6 +31,7 @@ Student says:
 
     response = client.chat.completions.create(
         model="gpt-5-mini",
+        max_completion_tokens=250,
         messages=[
             {"role":"system","content":SYSTEM_PROMPT},
             {"role":"user","content":prompt}
