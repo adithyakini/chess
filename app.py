@@ -48,8 +48,7 @@ with left:
     st.title("♟️ AI Chess Tutor")
 
     st.subheader("Current Position")
-
- //   st.text(st.session_state.board)
+    #st.text(st.session_state.board)
     svg_board = chess.svg.board(
         st.session_state.board,
         size=500
