@@ -1,9 +1,7 @@
 import chess.engine
 
-ENGINE_PATH = "./stockfish/stockfish-ubuntu-x86-64"
-
 engine = chess.engine.SimpleEngine.popen_uci(
-    ENGINE_PATH
+    "stockfish"
 )
 
 def get_ai_move(board):
