@@ -1,6 +1,5 @@
 import streamlit as st
 import chess
-from ai.opponent import get_ai_move
 
 from chess_engine.board import (
     initialize_board,
@@ -8,12 +7,20 @@ from chess_engine.board import (
 )
 
 from ai.coach import ask_coach
+from ai.opponent import get_ai_move
 
+# --------------------------------------------------
+# Page Setup
+# --------------------------------------------------
 
 st.set_page_config(
     page_title="AI Chess Tutor",
     layout="wide"
 )
+
+# --------------------------------------------------
+# Session State
+# --------------------------------------------------
 
 if "board" not in st.session_state:
     st.session_state.board = initialize_board()
@@ -24,11 +31,21 @@ if "moves" not in st.session_state:
 if "chat" not in st.session_state:
     st.session_state.chat = []
 
-left,right = st.columns([3,2])
+# --------------------------------------------------
+# Layout
+# --------------------------------------------------
+
+left, right = st.columns([3, 2])
+
+# ==================================================
+# LEFT PANEL - CHESS GAME
+# ==================================================
 
 with left:
 
-    st.title("AI Chess Tutor")
+    st.title("♟️ AI Chess Tutor")
+
+    st.subheader("Current Position")
 
     st.text(st.session_state.board)
 
@@ -40,42 +57,85 @@ with left:
     if st.button("Play Move"):
 
         success = make_move(
-        st.session_state.board,
-        move
-    )
-
-    if success:
-
-        st.session_state.moves.append(
-            f"Human: {move}"
+            st.session_state.board,
+            move
         )
 
-        ai_move = get_ai_move(
-            st.session_state.board
-        )
+        if success:
 
-        st.session_state.board.push(
-            ai_move
-        )
+            # Save human move
+            st.session_state.moves.append(
+                f"Human: {move}"
+            )
 
-        st.session_state.moves.append(
-            f"AI: {ai_move.uci()}"
-        )
+            # Check if game ended before AI moves
+            if not st.session_state.board.is_game_over():
 
-        st.rerun()
+                try:
 
-    else:
+                    ai_move = get_ai_move(
+                        st.session_state.board
+                    )
 
-        st.error("Illegal Move")
+                    if ai_move:
+
+                        st.session_state.board.push(
+                            ai_move
+                        )
+
+                        st.session_state.moves.append(
+                            f"AI: {ai_move.uci()}"
+                        )
+
+                except Exception as e:
+
+                    st.error(
+                        f"AI move failed: {e}"
+                    )
+
+            st.rerun()
+
+        else:
+
+            st.error("Illegal Move")
+
+    # ----------------------------------------------
+    # Game Status
+    # ----------------------------------------------
+
+    st.subheader("Game Status")
+
+    if st.session_state.board.is_checkmate():
+        st.success("Checkmate!")
+
+    elif st.session_state.board.is_stalemate():
+        st.warning("Stalemate")
+
+    elif st.session_state.board.is_insufficient_material():
+        st.warning("Draw - Insufficient Material")
+
+    elif st.session_state.board.is_check():
+        st.warning("Check!")
+
+    # ----------------------------------------------
+    # Move History
+    # ----------------------------------------------
 
     st.subheader("Move History")
 
-    for m in st.session_state.moves:
-        st.write(m)
+    if len(st.session_state.moves) == 0:
+        st.write("No moves yet.")
+
+    for move_text in st.session_state.moves:
+        st.write(move_text)
+
+# ==================================================
+# RIGHT PANEL - COACH
+# ==================================================
 
 with right:
 
-    st.subheader("Coach")
+    st.subheader("🧠 Chess Coach")
 
     question = st.text_input(
         "Ask your coach"
@@ -83,22 +143,50 @@ with right:
 
     if st.button("Send"):
 
-        answer = ask_coach(
-            st.session_state.board.fen(),
-            st.session_state.moves,
-            question
-        )
+        if question.strip():
 
-        st.session_state.chat.append(
-            ("You",question)
-        )
+            try:
 
-        st.session_state.chat.append(
-            ("Coach",answer)
-        )
+                answer = ask_coach(
+                    st.session_state.board.fen(),
+                    st.session_state.moves,
+                    question
+                )
 
-    for speaker,msg in st.session_state.chat:
+                st.session_state.chat.append(
+                    ("You", question)
+                )
+
+                st.session_state.chat.append(
+                    ("Coach", answer)
+                )
+
+            except Exception as e:
+
+                st.error(
+                    f"Coach error: {e}"
+                )
+
+    # ----------------------------------------------
+    # Chat History
+    # ----------------------------------------------
+
+    for speaker, message in st.session_state.chat:
 
         st.markdown(
-            f"**{speaker}:** {msg}"
+            f"**{speaker}:** {message}"
         )
+
+# ==================================================
+# RESET BUTTON
+# ==================================================
+
+st.divider()
+
+if st.button("🔄 New Game"):
+
+    st.session_state.board = initialize_board()
+    st.session_state.moves = []
+    st.session_state.chat = []
+
+    st.rerun()
