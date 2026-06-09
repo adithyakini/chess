@@ -39,7 +39,7 @@ with left:
 
     if st.button("Play Move"):
 
-    success = make_move(
+        success = make_move(
         st.session_state.board,
         move
     )
