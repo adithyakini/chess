@@ -3,3 +3,4 @@ python-chess
 openai
 streamlit-chat
 streamlit-javascript
+streamlit-chessboard
