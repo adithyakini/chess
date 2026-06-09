@@ -1,6 +1,7 @@
 import streamlit as st
 import chess
 import chess.svg
+import os
 import streamlit.components.v1 as components
 
 from chess_engine.board import (
@@ -60,12 +61,16 @@ with left:
     )
 
 
-    move = st.text_input(
-        "Enter Move (UCI)",
-        placeholder="e2e4"
+    html_file = open(
+        "components/chessboard.html",
+        "r",
+        encoding="utf-8"
     )
-
-    if st.button("Play Move"):
+    
+    move = components.html(
+        html_file.read(),
+        height=550
+    )
 
         success = make_move(
             st.session_state.board,
