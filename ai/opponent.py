@@ -1,15 +1,16 @@
-from stockfish import Stockfish
+import chess.engine
 
-stockfish = Stockfish(
-    path="stockfish.exe"
+ENGINE_PATH = "./stockfish/stockfish-ubuntu-x86-64"
+
+engine = chess.engine.SimpleEngine.popen_uci(
+    ENGINE_PATH
 )
-
-stockfish.set_skill_level(5)
 
 def get_ai_move(board):
 
-    stockfish.set_fen_position(
-        board.fen()
+    result = engine.play(
+        board,
+        chess.engine.Limit(time=0.1)
     )
 
-    return stockfish.get_best_move()
+    return result.move
