@@ -61,16 +61,16 @@ with left:
     )
 
 
-    html_file = open(
-        "components/chessboard.html",
-        "r",
-        encoding="utf-8"
-    )
-    
-    move = components.html(
-        html_file.read(),
-        height=550
-    )
+        html_file = open(
+            "components/chessboard.html",
+            "r",
+            encoding="utf-8"
+        )
+        
+        move = components.html(
+            html_file.read(),
+            height=550
+        )
 
         success = make_move(
             st.session_state.board,
