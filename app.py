@@ -1,5 +1,6 @@
 import streamlit as st
 import chess
+from ai.opponent import get_ai_move
 
 from chess_engine.board import (
     initialize_board,
