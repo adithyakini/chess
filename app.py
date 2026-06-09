@@ -46,27 +46,23 @@ with left:
 
     if success:
 
-        # Store human move
         st.session_state.moves.append(
             f"Human: {move}"
         )
 
-        # AI thinks
         ai_move = get_ai_move(
             st.session_state.board
         )
 
-        if ai_move:
+        st.session_state.board.push(
+            ai_move
+        )
 
-            st.session_state.board.push_uci(
-                ai_move
-            )
+        st.session_state.moves.append(
+            f"AI: {ai_move.uci()}"
+        )
 
-            st.session_state.moves.append(
-                f"AI: {ai_move}"
-            )
-
-        st.success("Move Played")
+        st.rerun()
 
     else:
 
