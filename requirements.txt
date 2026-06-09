@@ -1,5 +1,5 @@
 streamlit
 python-chess
-streamlit-chess
 openai
-stockfish
+streamlit-chat
+streamlit-javascript
