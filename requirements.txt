@@ -3,4 +3,3 @@ openai
 streamlit-chat
 streamlit-javascript
 python-chess
-streamlit-components
