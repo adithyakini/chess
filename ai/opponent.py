@@ -1,19 +1,10 @@
-import chess.engine
-import streamlit as st
-
-@st.cache_resource
-def get_engine():
-    return chess.engine.SimpleEngine.popen_uci(
-        "stockfish"
-    )
+import random
 
 def get_ai_move(board):
 
-    engine = get_engine()
+    legal_moves = list(board.legal_moves)
 
-    result = engine.play(
-        board,
-        chess.engine.Limit(time=0.1)
-    )
+    if not legal_moves:
+        return None
 
-    return result.move
+    return random.choice(legal_moves)
