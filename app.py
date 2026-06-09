@@ -1,5 +1,7 @@
 import streamlit as st
 import chess
+import chess.svg
+import streamlit.components.v1 as components
 
 from chess_engine.board import (
     initialize_board,
@@ -47,7 +49,17 @@ with left:
 
     st.subheader("Current Position")
 
-    st.text(st.session_state.board)
+ //   st.text(st.session_state.board)
+    svg_board = chess.svg.board(
+        st.session_state.board,
+        size=500
+    )
+    
+    components.html(
+        svg_board,
+        height=520
+    )
+
 
     move = st.text_input(
         "Enter Move (UCI)",
