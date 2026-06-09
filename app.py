@@ -190,3 +190,23 @@ if st.button("🔄 New Game"):
     st.session_state.chat = []
 
     st.rerun()
+
+
+#-------------------------
+#DEBUG
+#------------------------
+if st.button("Test AI"):
+
+    try:
+
+        ai_move = get_ai_move(
+            st.session_state.board
+        )
+
+        st.success(
+            f"AI says {ai_move}"
+        )
+
+    except Exception as e:
+
+        st.error(str(e))
